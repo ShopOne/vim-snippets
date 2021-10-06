@@ -1,0 +1,609 @@
+snippet     iomain
+abbr        in_out_stream
+    // I SELL YOU...! 
+    #include<iostream>
+    #include<vector>
+    #include<algorithm>
+    #include<functional>
+    #include<queue>
+    #include<chrono>
+    #include<iomanip>
+    #include<map>
+    #include<set>
+    using namespace std;
+    using ll = long long;
+    using P = pair<ll,ll>;
+    using TP = tuple<ll,ll,ll>;
+    void init_io(){
+     cin.tie(0);
+     ios::sync_with_stdio(false);
+     cout << fixed << setprecision(18);
+    }
+    signed main(){
+      init_io();
+      ${0}
+    }
+
+snippet     iocf
+abbr        for_cf
+    // I SELL YOU...! 
+    #include<iostream>
+    #include<vector>
+    #include<algorithm>
+    #include<functional>
+    #include<queue>
+    #include<chrono>
+    #include<iomanip>
+    #include<map>
+    #include<set>
+    using namespace std;
+    using ll = long long;
+    using P = pair<ll,ll>;
+    using TP = tuple<ll,ll,ll>;
+    void init_io(){
+     cin.tie(0);
+     ios::sync_with_stdio(false);
+     cout << fixed << setprecision(18);
+    }
+    void solve(){
+      ${0}
+    }
+    signed main(){
+      init_io();
+      ll t;
+      cin >> t;
+      while(t--) solve();
+    }
+
+snippet     eratos
+abbr        get_prime_list
+  vector<long long> eratos(int max){
+    vector<long long> res;
+    vector<bool> cp_list(max+1,true);
+    cp_list[0]=false;
+    cp_list[1]=false;
+    for(ll i=2;i<=max;i++){
+      if(cp_list[i]){
+        res.push_back(i);
+        for(ll j=2;j*i<=max;j++){
+          cp_list[i*j]=false;
+        }
+      }
+    }
+    return res;
+  }
+
+snippet     union_find
+abbr        uf
+  class union_find{
+    int n;
+    vector<int> par,rk,size;
+    public:
+    union_find(int max_n){
+      n = max_n+1;
+      for(int i=0;i<=n;i++){
+        par.emplace_back(i);
+        rk.emplace_back(0);
+        size.emplace_back(1);
+      }
+    }
+    int root(int x){
+      vector<int> nodes;
+      while(x!=par[x]){
+        nodes.emplace_back(x);
+        x = par[x];
+      }
+      for(auto v:nodes){
+        par[v] = x;
+      }
+      return x;
+    }
+    void unite(int x,int y){
+      x = root(x);
+      y = root(y);
+      if(x==y) return;
+      if(rk[x]<rk[y]){
+        par[x] = y;
+        size[y] += size[x];
+      }else{
+        par[y] = x;
+        if(rk[x]==rk[y]) rk[x]++;
+        size[x] += size[y];
+      }
+    }
+    bool same(int x,int y){
+      return root(x)==root(y);
+    }
+    int treesize(int x){
+      return size[root(x)];
+    }
+  };
+ 
+snippet     wuf
+abbr        weight union find
+  class Wunion_find{
+    int n;
+    vector<int> par,rk,size,diff_w;
+    public:
+    Wunion_find(int max_n){
+      n = max_n+1;
+      for(int i=0;i<=n;i++){
+        par.emplace_back(i);
+        rk.emplace_back(0);
+        size.emplace_back(1);
+        diff_w.emplace_back(0);
+      }
+    }
+    int root(int x){
+      if(par[x]==x){
+        return x;
+      }
+      int r = root(par[x]);
+      diff_w[x] += diff_w[par[x]];
+      return par[x] = r;
+    }
+    void unite(int x,int y,int w){
+      w += weight(x);
+      w -= weight(y);
+      x = root(x);
+      y = root(y);
+      if(x==y) return;
+      if(rk[x]<rk[y]){
+        par[x] = y;
+        size[y] += size[x];
+        diff_w[x] = -w;
+      }else{
+        par[y] = x;
+        if(rk[x]==rk[y]) rk[x]++;
+        size[x] += size[y];
+        diff_w[y] = w;
+      }
+    }
+    bool same(int x,int y){
+      return root(x)==root(y);
+    }
+    int weight(int x){
+      root(x);
+      return diff_w[x];
+    }
+    int diff(int x,int y){
+      return weight(y)-weight(x);
+    }
+    int treesize(int x){
+      return size[root(x)];
+    }
+  };
+
+snippet     pmod
+abbr        pmod
+  long long pmod(long long a, long long n) {
+    long long res = 1;
+    while (n > 0) {
+        if (n & 1) res = res * a % MOD;
+        a = a * a % MOD;
+        n >>= 1;
+    }
+    return res;
+  }
+
+snippet     modinv
+abbr        modinv
+  ll modinv(ll a, ll m){
+    ll b=m,u=1,v=0;
+    while(b){
+      ll t=a/b;
+      a-=t*b; swap(a,b);
+      u-=t*v; swap(u,v);
+    }
+    u%=m;
+    if(u<0) u+=m;
+    return u;
+  }
+
+snippet     lis
+abbr        LIS
+  void lis(vector<ll>& dp,ll a[]){
+    fill(dp.begin(),dp.end(),INF);
+    for(int i=0;i<dp.size();i++){
+      *lower_bound(dp.begin(),dp.end(),a[i])=a[i];
+    }
+  }
+snippet   bitsubset
+abbr      subset
+  for(int y=0;;y=(y-${0})&${1}){
+    if(i==${2}) break;
+  }
+
+snippet  tree_size
+abbr     length of tree_size
+  int tree_dfs(int v,int& last_v,int& leng_v,int cnt){
+    used[v]=true;
+    if(leng_v<cnt){
+      leng_v = cnt;
+      last_v = v;
+    }
+    int res=cnt,tmp;
+    for(auto to:G[v]){
+      if(!used[to]){
+        tmp = tree_dfs(to,last_v,leng_v,cnt+1);
+        res = max(tmp,res);
+      }
+    }
+    return res;
+  }
+  ll tree_size(int n,vector<int> G[],bool used[]){
+    int u,nu,lv;
+    fill(used,used+n,false);
+    u=lv=0;
+    tree_dfs(0,u,lv,0); 
+    lv=0;
+    nu = u;
+    fill(used,used+n,false);
+    return tree_dfs(u,nu,lv,0); 
+  }
+snippet    chrono_use
+abbr       power
+  void timers(chrono::system_clock::time_point start,double tl){
+    double time;
+    chrono::system_clock::time_point now;
+    while(true){
+      // write your code
+
+
+      now = chrono::system_clock::now();
+      time = chrono::duration_cast<chrono::milliseconds>(now-start).count();
+      if(time>=tl) break;
+    }
+  }
+snippet    segtree
+abbr       seg tree mogumogu
+  template <typename Monoid >
+  struct SegmentTree{
+    using F = function< Monoid(Monoid,Monoid) >;
+
+    int sz;
+    vector<Monoid> seg;
+
+    const F f;
+    const Monoid M;
+
+    SegmentTree(int n,const F f,const Monoid &M) : f(f),M(M){
+      sz = 1;
+      while(sz<n) sz<<=1;
+      seg.assign(sz*2,M);
+    }
+    void set(int k,const Monoid &v){
+      seg[k+sz] = v;
+    }
+    void build(){
+      for(int k=sz-1;k>0;k--){
+        seg[k] = f(seg[2*k],seg[2*k+1]);
+      }
+    }
+    void update(int k,const Monoid &v){
+      k += sz;
+      seg[k] = v;
+      while(k >>= 1){
+        seg[k] = f(seg[2*k],seg[2*k+1]);
+      }
+    }
+    Monoid que(int a,int b){
+      Monoid L=M,R=M;
+      for(a+=sz, b+=sz;a<b;a>>=1,b>>=1){
+        if(a&1) L = f(L,seg[a++]);
+        if(b&1) R = f(seg[--b],R);
+      }
+      return f(L,R);
+    }
+    Monoid operator[](const int &k) const{
+      return seg[k+sz];
+    }
+  };
+snippet scc
+abbr kyo_renketu_bunkai
+  class SccGraph {
+    vector<vector<int>> g,rg;
+    vector<int> res;
+    int n;
+    void dfs(int v,vector<bool> &used,vector<int> &vlst){
+      used[v] = true;
+      for(auto nv:g[v]){
+        if(!used[nv]){
+          dfs(nv,used,vlst);
+        }
+      }
+      vlst.push_back(v);
+    }
+    void r_dfs(int v,int k,vector<bool> &used){
+      used[v] = true;
+      res[v] = k;
+      for(auto nv:rg[v]){
+        if(!used[nv]){
+          r_dfs(nv,k,used);
+        }
+      }
+    }
+    public:
+    SccGraph(int n){
+      this->n = n;
+      g = vector<vector<int>>(n, vector<int>());
+      rg = vector<vector<int>>(n, vector<int>());
+      res = vector<int>(n,0);
+    }
+    void connect(int from,int to){
+      g[from].push_back(to);
+      rg[to].push_back(from);
+    }
+    bool same(int v,int w){
+      return res[v] == res[w];
+    }
+    void scc(){
+      vector<bool> used(n,false);
+      vector<int> vlst;
+      for(int i=0;i<n;i++){
+        if(!used[i]){
+          dfs(i,used,vlst);
+        }
+      }
+      fill(used.begin(),used.end(),false);
+      reverse(vlst.begin(),vlst.end());
+      int k = 0;
+      for(auto v:vlst){
+        if(!used[v]){
+          r_dfs(v,k,used);
+          k++;
+        }
+      }
+    }
+  };
+snippet enumration
+abbr kazoeage
+  class Enumeration{
+    public:
+    vector<long long> fac,finv,inv;
+    int mod;
+    Enumeration(int n,int mod){
+      fac = vector<long long>(n);
+      finv = vector<long long>(n);
+      inv = vector<long long>(n);
+      this->mod = mod;
+      fac[0] = fac[1] = 1;
+      finv[0] = finv[1] = 1;
+      inv[1] = 1;
+      for (int i = 2; i < n; i++){
+        fac[i] = fac[i - 1] * i % mod;
+        inv[i] = mod - inv[mod%i] * (mod / i) % mod;
+        finv[i] = finv[i - 1] * inv[i] % mod;
+      }
+    }
+    long long modinv(ll a){
+      ll b=mod,u=1,v=0;
+      while(b){
+        ll t=a/b;
+        a-=t*b; swap(a,b);
+        u-=t*v; swap(u,v);
+      }
+      u%=mod;
+      if(u<0) u+=mod;
+      return u;
+    }
+    long long comb(int n,int k){
+      if (n < k) return 0;
+      if (n < 0 || k < 0) return 0;
+      return fac[n] * (finv[k] * finv[n - k] % mod) % mod;
+    }
+
+    long long perm(int n,int k){
+      if (n < k) return 0;
+      return (fac[n]*finv[n-k])%mod;
+    }
+  };
+snippet dice
+abbr rool the dice
+  struct Dice{
+    // 1-indexed dice
+    //
+    //   ------
+    //  / 1  / |
+    //  -----|4/
+    //  | 2  |/
+    //  ------
+    vector<int> d;
+    void roll_front(){
+      vector<int> cpd = d;
+      d[1] = cpd[5];
+      d[2] = cpd[1];
+      d[6] = cpd[2];
+      d[5] = cpd[6];
+    }
+    void roll_back(){
+      vector<int> cpd = d;
+      d[1] = cpd[2];
+      d[2] = cpd[6];
+      d[6] = cpd[5];
+      d[5] = cpd[1];
+    }
+    void roll_right(){
+      vector<int> cpd = d;
+      d[1] = cpd[4];
+      d[4] = cpd[6];
+      d[6] = cpd[3];
+      d[3] = cpd[1];
+    }
+    void roll_left(){
+      vector<int> cpd = d;
+      d[1] = cpd[3];
+      d[3] = cpd[6];
+      d[6] = cpd[4];
+      d[4] = cpd[1];
+    }
+    void spin_right(){
+      vector<int> cpd = d;
+      d[2] = cpd[3];
+      d[3] = cpd[5];
+      d[5] = cpd[4];
+      d[4] = cpd[2];
+    }
+    void spin_left(){
+      spin_right();
+      spin_right();
+      spin_right();
+    }
+    Dice(int front,int top){
+      d = vector<int>(7);
+      for(int i=1;i<7;i++){
+        d[i] = i;
+      }
+      if(top==6){
+        roll_front();
+        roll_front();
+      }else if(top!=1){
+        roll_front();
+        while(top != d[1]){
+          roll_right();
+        }
+      }
+      while(front!=d[2]){
+        spin_right();
+      }
+    }
+  };
+snippet two_sat
+abbr twosat solve
+  class TwoSat {
+    vector<vector<int>> g,rg;
+    vector<int> res;
+    int n;
+    void dfs(int v,vector<bool> &used,vector<int> &vlst){
+      used[v] = true;
+      for(auto nv:g[v]){
+        if(!used[nv]){
+          dfs(nv,used,vlst);
+        }
+      }
+      vlst.push_back(v);
+    }
+    void r_dfs(int v,int k,vector<bool> &used){
+      used[v] = true;
+      res[v] = k;
+      for(auto nv:rg[v]){
+        if(!used[nv]){
+          r_dfs(nv,k,used);
+        }
+      }
+    }
+    void connect(int from,int to){
+      g[from].push_back(to);
+      rg[to].push_back(from);
+    }
+    bool same(int v,int w){
+      return res[v] == res[w];
+    }
+    public:
+    TwoSat(int n){
+      this->n = n;
+      g = vector<vector<int>>(2*n+1, vector<int>());
+      rg = vector<vector<int>>(2*n+1, vector<int>());
+      res = vector<int>(2*n+1,0);
+    }
+    void add_logic(int s,int t){
+      if(s<0){
+        s *= -1;
+        s += n;
+      }
+      if(t<0){
+        t *= -1;
+        t += n;
+      }
+      s--;
+      t--;
+      s = (s+n)%(2*n);
+      connect(s,t);
+      s = (s+n)%(2*n);
+      t = (t+n)%(2*n);
+      connect(t,s);
+    }
+    void two_sat(){
+      vector<bool> used(2*n+1,false);
+      vector<int> vlst;
+      for(int i=0;i<2*n+1;i++){
+        if(!used[i]){
+          dfs(i,used,vlst);
+        }
+      }
+      fill(used.begin(),used.end(),false);
+      reverse(vlst.begin(),vlst.end());
+      int k = 0;
+      for(auto v:vlst){
+        if(!used[v]){
+          r_dfs(v,k,used);
+          k++;
+        }
+      }
+    }
+    bool can_two_sat(){
+      for(int i=0;i<n;i++){
+        if(same(i,i+n)){
+          return false;
+        }
+      }
+      return true;
+    }
+    bool use_v(int v){
+      if(res[v] < res[v+n]){
+        return false;
+      }else{
+        return true;
+      }
+    }
+  };
+snippet flow
+abbr flow
+  class Flow{
+    public:
+      const long long INF = 1e15;
+      struct edge{long long to, cap, rev;};
+      using V = vector<vector<edge>>;
+
+      vector<bool> used;
+      V G;
+      Flow(int n){
+        used = vector<bool>(n);
+        G = V(n,vector<edge>());
+      }
+      void add_edge(int from,int to,long long cap){
+        G[from].push_back((edge){to,cap,(int)G[to].size()});
+        G[to].push_back((edge){from,0,(int)G[from].size()-1});
+      }
+      void add_undirected_edge(int from,int to,long long cap){
+        G[from].push_back((edge){to,cap,(int)G[to].size()});
+        G[to].push_back((edge){from,cap,(int)G[from].size()-1});
+      }
+      long long dfs(int v,int t,long long f){
+        if(v==t){
+          return f;
+        }
+        used[v] = true;
+        for(int i=0;i<G[v].size();i++){
+          edge &e = G[v][i];
+          if(!used[e.to] && e.cap > 0){
+            long long d = dfs(e.to, t, min((long long)f,e.cap));
+            if(d>0){
+              e.cap -= d;
+              G[e.to][e.rev].cap += d;
+              return d;
+            }
+          }
+        }
+        return 0;
+      }
+      long long max_flow(int s,int t){
+        long long flow=0;
+        while(true){
+          fill(used.begin(),used.end(),false);
+          long long f = dfs(s,t,INF);
+          if(f==0) return flow;
+          flow += f;
+        }
+      }
+  };
